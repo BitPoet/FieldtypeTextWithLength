@@ -1,0 +1,45 @@
+<?php namespace ProcessWire;
+
+class FieldtypeTextWithLength extends FieldtypeText {
+
+	public static function getModuleInfo() {
+		return [
+			'title'			=>	__('Text with .length Selector', __FILE__),
+			'summary'		=>	__('Like FieldtypeText, but with a subfield selector .length for string length comparison', __FILE__),
+			'version'		=>	'0.0.2'
+		];
+	}
+	
+	public function getMatchQuery($query, $table, $subfield, $operator, $value) {
+		
+		$database = $this->wire("database");
+		
+		if($subfield === 'length') {
+			
+			$table = $database->escapeTable($table);
+			$value = $database->escapeStr($value);
+			
+			$query->where("CHAR_LENGTH({$table}.data){$operator}$value");
+		} else {
+			parent::getMatchQuery($query, $table, $subfield, $operator, $value);
+		}
+		
+		return $query;
+	}
+	
+	public function ___getSelectorInfo(Field $field, array $data = array()) {
+		
+		$info = parent::___getSelectorInfo($field, $data);
+		
+		$fsinfo = new FieldSelectorInfo();
+		$infoTpl = $fsinfo->getSelectorInfoTemplate();
+		$infoTpl['name'] = 'length';
+		$infoTpl['label'] = $this->_('Length');
+		
+		$info['subfields']['length'] = $infoTpl;
+		
+		return $info;
+		
+	}
+	
+}
