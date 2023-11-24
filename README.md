@@ -8,7 +8,7 @@ The search is based on the number of characters, not bytes.
 
 Example:
 ```php
-$pagesWithShortNames = $pages->find('name.length<6');
+$pagesWithShortHeadlines = $pages->find('headline.length<6');
 ```
 
 ## Usage
